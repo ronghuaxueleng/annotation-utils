@@ -58,7 +58,7 @@ public class ClassUtils {
      * 获得类字段
      *
      * @param className 类名
-     * @return
+     * @return 字段列表
      */
     public List<ReturnTypeField> getClassFields(String className) {
         List<ReturnTypeField> returnTypeFieldList = new ArrayList<>();

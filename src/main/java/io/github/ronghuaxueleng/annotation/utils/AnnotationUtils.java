@@ -1,9 +1,7 @@
 package io.github.ronghuaxueleng.annotation.utils;
 
 import io.github.ronghuaxueleng.annotation.entity.BeanAnnotationAttr;
-import javassist.ClassPool;
 import javassist.CtClass;
-import javassist.CtMethod;
 import javassist.NotFoundException;
 import javassist.bytecode.*;
 import javassist.bytecode.annotation.Annotation;
@@ -86,6 +84,7 @@ public class AnnotationUtils {
      * @param annoName   方法上的注解名
      * @param fieldName  注解中的属性名
      * @param fieldValue 注解中的属性值
+     * @throws NotFoundException 未找到方法异常
      */
     public void setMethodAnnotatioinFieldValue(String className, String methodName, String annoName,
                                                String fieldName, String fieldValue) throws NotFoundException {
@@ -102,8 +101,10 @@ public class AnnotationUtils {
      * @param annoName   方法上的注解名
      * @param fieldName  注解中的属性名
      * @param fieldValue 注解中的属性值
+     * @throws NotFoundException 未找到方法异常
      */
-    public void setMethodAnnotatioinFieldValue(CtClass cc, String methodName, String annoName, String fieldName, String fieldValue) throws NotFoundException {
+    public void setMethodAnnotatioinFieldValue(CtClass cc, String methodName, String annoName, String fieldName,
+                                               String fieldValue) throws NotFoundException {
         classUtils.defrost(cc);
         MethodInfo methodInfo = classUtils.getMethod(cc, methodName);
         ConstPool constPool = methodInfo.getConstPool();
@@ -124,8 +125,10 @@ public class AnnotationUtils {
      * @param annoName   注解名
      * @param fieldName  字段名
      * @param fieldValue 字段值
+     * @throws NotFoundException 未找到方法异常
      */
-    public void addMethodAnnotatioinFieldValue(String className, String methodName, String annoName, String fieldName, String fieldValue) throws NotFoundException {
+    public void addMethodAnnotatioinFieldValue(String className, String methodName, String annoName,
+                                               String fieldName, String fieldValue) throws NotFoundException {
         CtClass cc = classUtils.createClassByClassName(className);
         addMethodAnnotatioinFieldValue(cc, methodName, annoName, fieldName, fieldValue);
     }
@@ -138,8 +141,10 @@ public class AnnotationUtils {
      * @param annoName   注解名
      * @param fieldName  字段名
      * @param fieldValue 字段值
+     * @throws NotFoundException 位置到方法异常
      */
-    public void addMethodAnnotatioinFieldValue(CtClass cc, String methodName, String annoName, String fieldName, String fieldValue) throws NotFoundException {
+    public void addMethodAnnotatioinFieldValue(CtClass cc, String methodName, String annoName, String fieldName,
+                                               String fieldValue) throws NotFoundException {
         classUtils.defrost(cc);
         MethodInfo methodInfo = classUtils.getMethod(cc, methodName);
         ConstPool constPool = methodInfo.getConstPool();
@@ -171,6 +176,7 @@ public class AnnotationUtils {
      * @param annoName   注解名
      * @param fieldName  注解属性字段
      * @param fieldValue 注解属性值
+     * @throws NotFoundException 未找到方法异常
      */
     public void addMethodAnnotatioinFieldValue(CtClass cc, String methodName, String annoName, String fieldName,
                                                Object fieldValue) throws NotFoundException {
@@ -191,6 +197,7 @@ public class AnnotationUtils {
      * @param annoName   注解名
      * @param fieldName  字段名
      * @param fieldValue 字段值
+     * @throws NotFoundException 未找到方法异常
      */
     public void addMethodAnnotatioinFieldValue(CtClass cc, String methodName, String annoName,
                                                String fieldName, MemberValue fieldValue) throws NotFoundException {
@@ -210,6 +217,7 @@ public class AnnotationUtils {
      * @param constPool  类
      * @param annotation 注解
      * @param attrs      属性
+     * @return 注解
      */
     public Annotation setAnnotation(ConstPool constPool, Annotation annotation, List<BeanAnnotationAttr> attrs) {
         for (BeanAnnotationAttr attr : attrs) {
@@ -225,6 +233,7 @@ public class AnnotationUtils {
      * @param annotation 注解
      * @param fieldName  字段名
      * @param fieldValue 字段值
+     * @return 注解
      */
     public Annotation setAnnotation(ConstPool constPool, Annotation annotation, String fieldName, Object fieldValue) {
         if (fieldValue instanceof String) {
@@ -258,6 +267,8 @@ public class AnnotationUtils {
      * @param methodName 当前方法名
      * @param annoName   方法上的注解名
      * @param fieldName  注解中的属性名
+     * @return 注解属性值
+     * @throws NotFoundException 未找到方法异常
      */
     public String getMethodAnnotatioinFieldValue(String className, String methodName, String annoName, String fieldName) throws NotFoundException {
         CtClass cc = classUtils.createClassByClassName(className);
@@ -271,6 +282,8 @@ public class AnnotationUtils {
      * @param methodName 当前方法名
      * @param annoName   方法上的注解名
      * @param fieldName  注解中的属性名
+     * @return 注解属性值
+     * @throws NotFoundException 未找到方法异常
      */
     public String getMethodAnnotatioinFieldValue(CtClass cc, String methodName, String annoName, String fieldName) throws NotFoundException {
         classUtils.defrost(cc);
