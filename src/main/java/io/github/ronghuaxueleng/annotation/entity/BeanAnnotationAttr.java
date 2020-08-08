@@ -15,10 +15,10 @@ public class BeanAnnotationAttr {
   /**
    * 属性名
    */
-  private String attrName;
+  protected String attrName;
 
   /**
    * 属性值
    */
-  private Object attrValue;
+  protected Object attrValue;
 }

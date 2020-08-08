@@ -1,15 +1,17 @@
 package io.github.ronghuaxueleng.annotation.utils;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import io.github.ronghuaxueleng.annotation.entity.BeanAnnotation;
 import io.github.ronghuaxueleng.annotation.entity.BeanAnnotationAttr;
 import javassist.CtClass;
 import javassist.NotFoundException;
 import javassist.bytecode.*;
-import javassist.bytecode.annotation.Annotation;
-import javassist.bytecode.annotation.ArrayMemberValue;
-import javassist.bytecode.annotation.MemberValue;
-import javassist.bytecode.annotation.StringMemberValue;
+import javassist.bytecode.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 /**
@@ -21,7 +23,7 @@ import java.util.logging.Logger;
 public class AnnotationUtils {
 
     private static final Logger logger = Logger.getAnonymousLogger();
-
+    private final Gson gson = new Gson();
     private final ClassUtils classUtils = new ClassUtils();
 
     /**
@@ -248,14 +250,33 @@ public class AnnotationUtils {
             memberValue.setValue(stringMemberValues);
             annotation.addMemberValue(fieldName, memberValue);
         } else if (fieldValue instanceof List) {
-            List<String> objects = (List<String>) fieldValue;
-            ArrayMemberValue memberValue = new ArrayMemberValue(constPool);
-            StringMemberValue[] stringMemberValues = new StringMemberValue[objects.size()];
-            for (int i = 0; i < objects.size(); i++) {
-                stringMemberValues[i] = new StringMemberValue(objects.get(i), constPool);
+            List<Object> objects = (List<Object>) fieldValue;
+            if (objects.size() > 0) {
+                ArrayMemberValue memberValue = new ArrayMemberValue(constPool);
+                if (objects.get(0) instanceof String) {
+                    List<String> stringObjects = (List<String>) fieldValue;
+                    StringMemberValue[] stringMemberValues = new StringMemberValue[stringObjects.size()];
+                    for (int i = 0; i < stringObjects.size(); i++) {
+                        stringMemberValues[i] = new StringMemberValue(stringObjects.get(i), constPool);
+                    }
+                    memberValue.setValue(stringMemberValues);
+                } else if (objects.get(0) instanceof Map) {
+                    String toJson = gson.toJson(fieldValue);
+                    List<BeanAnnotation> subAnnotations = gson.fromJson(toJson, new TypeToken<List<BeanAnnotation>>() {
+                    }.getType());
+                    List<AnnotationMemberValue> annotationMemberValues = new ArrayList<>();
+                    for (BeanAnnotation subAnnotation : subAnnotations) {
+                        String subAnnotationName = subAnnotation.getName();
+                        List<BeanAnnotationAttr> subAnnotationAttrs = subAnnotation.getAttrs();
+                        Annotation anno = setAnnotation(constPool, new Annotation(subAnnotationName, constPool), subAnnotationAttrs);
+                        AnnotationMemberValue annotationMemberValue = new AnnotationMemberValue(constPool);
+                        annotationMemberValue.setValue(anno);
+                        annotationMemberValues.add(annotationMemberValue);
+                    }
+                    memberValue.setValue(annotationMemberValues.toArray(new MemberValue[0]));
+                }
+                annotation.addMemberValue(fieldName, memberValue);
             }
-            memberValue.setValue(stringMemberValues);
-            annotation.addMemberValue(fieldName, memberValue);
         }
         return annotation;
     }

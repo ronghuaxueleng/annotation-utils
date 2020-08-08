@@ -20,7 +20,7 @@ public class BeanAnnotation {
     /**
      * 注解名称
      */
-    private String name;
+    protected String name;
 
-    private List<BeanAnnotationAttr> attrs = new ArrayList<>();
+    protected List<BeanAnnotationAttr> attrs = new ArrayList<>();
 }

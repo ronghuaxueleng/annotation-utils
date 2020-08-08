@@ -1,6 +1,8 @@
 package io.github.ronghuaxueleng.annotation.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 返回值字段
@@ -9,15 +11,17 @@ import lombok.Data;
  * @create: 2020/7/27 0027 下午 20:57
  **/
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class ReturnTypeField {
 
   /**
    * 字段名
    */
-  private String name;
+  protected String name;
 
   /**
    * 类型
    */
-  private String genericType;
+  protected String genericType;
 }

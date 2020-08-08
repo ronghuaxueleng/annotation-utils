@@ -16,65 +16,65 @@ public class ClassMethod {
     /**
      * 请求类型
      */
-    private String type;
+    protected String type;
     /**
      * 处理后的url
      */
-    private String url;
+    protected String url;
     /**
      * code
      */
-    private String code;
+    protected String code;
     /**
      * 所在类方法名
      */
-    private String method;
+    protected String method;
     /**
      * url全路径
      */
-    private String fullUrl;
+    protected String fullUrl;
     /**
      * 作用域
      */
-    private String scope = "methond";
+    protected String scope = "methond";
     /**
      * 参数列表
      */
-    private List<String> params = new ArrayList<>();
+    protected List<String> params = new ArrayList<>();
     /**
      * 方法中文名
      */
-    private String methondName;
+    protected String methondName;
     /**
      * 所在路径名
      */
-    private String fullClassName;
+    protected String fullClassName;
     /**
      * 参数字符串
      */
-    private String paramsString;
+    protected String paramsString;
     /**
      * 是否isPathVariable
      */
-    private boolean isPathVariable;
+    protected boolean isPathVariable;
     /**
      * request参数列表
      */
-    private List<String> requestParamParams = new ArrayList<>();
+    protected List<String> requestParamParams = new ArrayList<>();
     /**
      * pathVariable参数列表
      */
-    private List<String> pathVariableParams = new ArrayList<>();
+    protected List<String> pathVariableParams = new ArrayList<>();
     /**
      * 注解列表
      */
-    private List<BeanAnnotation> annotations = new ArrayList<>();
+    protected List<BeanAnnotation> annotations = new ArrayList<>();
     /**
      * 返回值
      */
-    private ReturnType methodReturnType;
+    protected ReturnType methodReturnType;
     /**
      * 参数列表
      */
-    private List<MethodParam> methodParams = new ArrayList<>();
+    protected List<MethodParam> methodParams = new ArrayList<>();
 }
