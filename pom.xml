@@ -6,7 +6,7 @@
 
 	<groupId>io.github.ronghuaxueleng</groupId>
 	<artifactId>annotation-utils</artifactId>
-	<version>1.0.2</version>
+	<version>1.0.3</version>
 	<name>java类和方法注解工具类</name>
 	<description>java类和方法注解工具类</description>
 	<url>https://github.com/ronghuaxueleng/annotation-utils</url>

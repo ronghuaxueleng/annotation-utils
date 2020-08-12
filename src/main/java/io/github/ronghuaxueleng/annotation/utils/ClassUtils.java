@@ -80,8 +80,7 @@ public class ClassUtils {
                         returnTypeField.setName(declaredField.getName());
                         returnTypeFieldList.add(returnTypeField);
                     }
-                } catch (NotFoundException e) {
-                    logger.info(e.getMessage());
+                } catch (NotFoundException ignored) {
                 }
             }
         } catch (NotFoundException e) {

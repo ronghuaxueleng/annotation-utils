@@ -21,6 +21,11 @@ public class ReturnTypeField {
   protected String name;
 
   /**
+   * 字段中文名
+   */
+  protected String cnName;
+
+  /**
    * 类型
    */
   protected String genericType;

@@ -2,16 +2,19 @@ package io.github.ronghuaxueleng.annotation.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import io.github.ronghuaxueleng.annotation.entity.BeanAnnotation;
-import io.github.ronghuaxueleng.annotation.entity.BeanAnnotationAttr;
+import io.github.ronghuaxueleng.annotation.entity.*;
+import javassist.ClassPool;
 import javassist.CtClass;
+import javassist.CtField;
 import javassist.NotFoundException;
 import javassist.bytecode.*;
 import javassist.bytecode.annotation.*;
 
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 /**
@@ -25,6 +28,63 @@ public class AnnotationUtils {
     private static final Logger logger = Logger.getAnonymousLogger();
     private final Gson gson = new Gson();
     private final ClassUtils classUtils = new ClassUtils();
+
+    /**
+     * 在类上添加注解
+     *
+     * @param module            注解对象
+     * @param classfileBuffer   类字节码
+     * @param savedClassDirPath 保存class文件夹路径
+     * @param debug             是否debug
+     * @return 字节码
+     */
+    public byte[] addClassAnnotation(Controller module, byte[] classfileBuffer, String savedClassDirPath, boolean debug) {
+        // 获取一个 class 池。
+        ClassPool classPool = ClassPool.getDefault();
+
+        try {
+            // 创建一个新的 class 类。classfileBuffer 就是当前class的字节码
+            CtClass ctClass = classPool.makeClass(new ByteArrayInputStream(classfileBuffer));
+            Set<BeanAnnotation> classAnnotations = module.getAnnotations();
+            for (BeanAnnotation annotation : classAnnotations) {
+                String name = annotation.getName();
+                List<BeanAnnotationAttr> attrs = annotation.getAttrs();
+                addClassAnnotationFieldValue(ctClass, name, attrs);
+            }
+
+            List<ClassMethod> methodList = module.getMethodList();
+            for (ClassMethod method : methodList) {
+                List<BeanAnnotation> methodAnnotations = method.getAnnotations();
+                for (BeanAnnotation annotation : methodAnnotations) {
+                    String name = annotation.getName();
+                    List<BeanAnnotationAttr> attrs = annotation.getAttrs();
+                    addMethodAnnotatioinFieldValue(ctClass, method.getMethod(), name, attrs);
+                }
+            }
+
+            List<Field> fieldList = module.getFieldList();
+            for (Field field : fieldList) {
+                List<BeanAnnotation> fieldAnnotations = field.getAnnotations();
+                for (BeanAnnotation annotation : fieldAnnotations) {
+                    String name = annotation.getName();
+                    List<BeanAnnotationAttr> attrs = annotation.getAttrs();
+                    addFieldAnnotatioinFieldValue(ctClass, field.getField(), name, attrs);
+                }
+            }
+
+            if (savedClassDirPath != null) {
+                ctClass.writeFile(savedClassDirPath);
+            }
+            // 返回新的字节码
+            return ctClass.toBytecode();
+        } catch (Exception e) {
+            if (debug) {
+                e.printStackTrace();
+            }
+            logger.info(e.getMessage());
+        }
+        return new byte[0];
+    }
 
     /**
      * 在类上添加注解
@@ -76,6 +136,37 @@ public class AnnotationUtils {
             classFile.addAttribute(attributeInfo);
         }
         return attributeInfo;
+    }
+
+    public void addFieldAnnotatioinFieldValue(String classNmae, String fieldName, String annoName, List<BeanAnnotationAttr> attrs) throws NotFoundException {
+        CtClass cc = classUtils.createClassByClassName(classNmae);
+        addFieldAnnotatioinFieldValue(cc, fieldName, annoName, attrs);
+    }
+
+    /**
+     * 给属性添加注解
+     *
+     * @param cc
+     * @param fieldName
+     * @param annoName
+     * @param attrs
+     */
+    public void addFieldAnnotatioinFieldValue(CtClass cc, String fieldName, String annoName, List<BeanAnnotationAttr> attrs) {
+        try {
+            classUtils.defrost(cc);
+            CtField declaredField = cc.getDeclaredField(fieldName);
+            FieldInfo fieldInfo = declaredField.getFieldInfo();
+            ConstPool constPool = fieldInfo.getConstPool();
+            AnnotationsAttribute attr = (AnnotationsAttribute) fieldInfo.getAttribute(AnnotationsAttribute.visibleTag);
+            if (attr == null) {
+                attr = new AnnotationsAttribute(constPool, AnnotationsAttribute.visibleTag);
+            }
+            Annotation annotation = new Annotation(annoName, constPool);
+            attr.addAnnotation(setAnnotation(constPool, annotation, attrs));
+            fieldInfo.addAttribute(attr);
+        } catch (NotFoundException e) {
+            logger.info(e.getMessage());
+        }
     }
 
     /**
@@ -153,6 +244,14 @@ public class AnnotationUtils {
         addMethodAnnotatioinFieldValue(cc, methodName, annoName, fieldName, new StringMemberValue(fieldValue, constPool));
     }
 
+    /**
+     * 给方法添加注解
+     *
+     * @param cc         当前类
+     * @param methodName 方法名
+     * @param annoName   注解名
+     * @param attrs      属性
+     */
     public void addMethodAnnotatioinFieldValue(CtClass cc, String methodName, String annoName, List<BeanAnnotationAttr> attrs) {
         try {
             classUtils.defrost(cc);

@@ -15,24 +15,28 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 public class Controller {
-  /**
-   * 类名全路径
-   */
-  protected String fullClassName;
-  /**
-   * 类名
-   */
-  protected String controllerName;
-  /**
-   * 作用域
-   */
-  protected String scope = "controller";
-  /**
-   * 方法列表
-   */
-  protected List<ClassMethod> list = new ArrayList<>();
-  /**
-   * 注解列表
-   */
-  protected Set<BeanAnnotation> annotations = new HashSet<>();
+    /**
+     * 类名全路径
+     */
+    protected String fullClassName;
+    /**
+     * 类名
+     */
+    protected String controllerName;
+    /**
+     * 作用域
+     */
+    protected String scope = "controller";
+    /**
+     * 方法列表
+     */
+    protected List<ClassMethod> methodList = new ArrayList<>();
+    /**
+     * 字段列表
+     */
+    protected List<Field> fieldList = new ArrayList<>();
+    /**
+     * 注解列表
+     */
+    protected Set<BeanAnnotation> annotations = new HashSet<>();
 }
