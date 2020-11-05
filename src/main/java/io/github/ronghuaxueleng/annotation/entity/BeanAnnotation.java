@@ -22,5 +22,5 @@ public class BeanAnnotation {
      */
     protected String name;
 
-    protected List<BeanAnnotationAttr> attrs = new ArrayList<>();
+    protected List<BeanAnnotationAttr> attrs = new ArrayList<BeanAnnotationAttr>();
 }

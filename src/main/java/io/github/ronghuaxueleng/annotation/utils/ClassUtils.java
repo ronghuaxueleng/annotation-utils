@@ -61,7 +61,7 @@ public class ClassUtils {
      * @return 字段列表
      */
     public List<ReturnTypeField> getClassFields(String className) {
-        List<ReturnTypeField> returnTypeFieldList = new ArrayList<>();
+        List<ReturnTypeField> returnTypeFieldList = new ArrayList<ReturnTypeField>();
         try {
             // 创建类
             CtClass cc = createClassByClassName(className);

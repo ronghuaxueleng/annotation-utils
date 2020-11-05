@@ -30,7 +30,7 @@ public class Controller {
     /**
      * 方法列表
      */
-    protected List<ClassMethod> methodList = new ArrayList<>();
+    protected List<ClassMethod> methodList = new ArrayList<ClassMethod>();
     /**
      * 字段列表
      */
